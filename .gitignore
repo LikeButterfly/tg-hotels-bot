@@ -1,0 +1,56 @@
+# Бинарные файлы и кеш Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+*.a
+.bin
+
+# Кэш модуля Go
+/pkg/
+/go.sum
+/go.work
+/go.work.sum
+
+# Файлы сборки и временные файлы
+*.o
+*.obj
+*.gch
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.swo
+
+# Директория кеша Go
+$GOPATH/pkg/
+$GOCACHE/
+$GOMODCACHE/
+
+# Конфигурация IDE (VS Code)
+.vscode/
+.vscode/*
+!.vscode/settings.json # (если хочется сохранить настройки проекта)
+
+# Логи и временные файлы
+*.log
+*.tmp
+*.lock
+*.pid
+
+# Переменные окружения
+.env
+
+# Кэш зависимостей и временные файлы
+vendor/
+node_modules/
+coverage.out
+testdata/
+
+# Docker и контейнерные файлы
+docker-compose.override.yml
+.Dockerfile.swp
+
