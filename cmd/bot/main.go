@@ -23,7 +23,6 @@ func main() {
 		}
 	}()
 
-	// Создаём бота
 	botApi, err := tgbotapi.NewBotAPI(cfg.BotToken)
 	if err != nil {
 		log.Fatal("Ошибка создания бота:", err)
@@ -31,5 +30,5 @@ func main() {
 
 	bot := telegram.NewBot(botApi)
 
-	bot.Start()
+	bot.Start(cfg)
 }

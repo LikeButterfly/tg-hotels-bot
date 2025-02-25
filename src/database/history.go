@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"tg-hotels-bot/src/utils" // FIXME? - так ли правильно?
+	misc_utils "tg-hotels-bot/src/utils/misc"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -67,7 +67,7 @@ func createHistory(collection *mongo.Collection, command string, callTime time.T
 
 func createHistoryDict(command string, callTime time.Time) map[string]any {
 	return map[string]any{
-		"text":         fmt.Sprintf("<b>Command</b> /%s called\nв %s", command, utils.GetReadableDateTime(callTime.Format("2006-01-02 15:04:05"))),
+		"text":         fmt.Sprintf("<b>Command</b> /%s called\nв %s", command, misc_utils.GetReadableDateTime(callTime.Format("2006-01-02 15:04:05"))),
 		"found_hotels": []string{},
 	}
 }

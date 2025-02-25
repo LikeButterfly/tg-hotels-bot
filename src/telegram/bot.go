@@ -2,33 +2,36 @@ package telegram
 
 import (
 	"log"
+	"tg-hotels-bot/src/config"
+	"tg-hotels-bot/src/telegram/handlers"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 type Bot struct {
-	bot *tgbotapi.BotAPI
+	BotAPI *tgbotapi.BotAPI
 }
 
 func NewBot(bot *tgbotapi.BotAPI) *Bot {
-	return &Bot{bot: bot}
+	return &Bot{BotAPI: bot}
 }
 
-func (b *Bot) Start() {
-	b.bot.Debug = true
-	log.Printf("Авторизован как %s", b.bot.Self.UserName)
+func (b *Bot) Start(cfg *config.Config) {
+	b.BotAPI.Debug = true
+	log.Printf("Авторизован как %s", b.BotAPI.Self.UserName)
+
+	b.SetDefaultCommands(cfg)
 
 	// Настраиваем поллер (длинные запросы)
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 20
 
-	updates, err := b.bot.GetUpdatesChan(u)
+	updates, err := b.BotAPI.GetUpdatesChan(u)
 
 	if err != nil {
 		log.Fatal("Ошибка получения обновлений:", err)
 	}
 
-	if err := b.HandleCommands(updates); err != nil {
-		log.Fatal("Ошибка обработки команд:", err)
-	}
+	handlers.HandleCommands(b.BotAPI, updates)
+
 }
