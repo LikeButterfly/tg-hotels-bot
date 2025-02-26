@@ -4,10 +4,10 @@ import (
 	"context"
 	"log"
 
-	"tg-hotels-bot/src/config"
-	"tg-hotels-bot/src/database"
-	"tg-hotels-bot/src/rapidapi/rapidapi_requests"
-	"tg-hotels-bot/src/telegram"
+	"tg-hotels-bot/internal/config"
+	"tg-hotels-bot/internal/database"
+	"tg-hotels-bot/internal/rapidapi/rapidapi_requests"
+	"tg-hotels-bot/internal/telegram"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )

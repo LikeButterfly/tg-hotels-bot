@@ -9,12 +9,6 @@
 
 ## Notes
 
-### Вначале проекта 
-
-```bash
-go mod init tg-hotels-bot
-```
-
 ### Подготовка проекта
 
 - `go clean -cache` - Удаляем кэш старой сборки
