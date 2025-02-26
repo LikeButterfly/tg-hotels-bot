@@ -8,7 +8,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func CreateHotelKeyboard(info utils.HotelInfo) tgbotapi.InlineKeyboardMarkup {
+func CreateHotelKeyboard(info utils.HotelInfo) *tgbotapi.InlineKeyboardMarkup {
 	hotelID := info.HotelID
 
 	bookingButton := tgbotapi.NewInlineKeyboardButtonURL(
@@ -31,10 +31,12 @@ func CreateHotelKeyboard(info utils.HotelInfo) tgbotapi.InlineKeyboardMarkup {
 		"add_to_favorites",
 	)
 
-	return tgbotapi.NewInlineKeyboardMarkup(
+	markup := tgbotapi.NewInlineKeyboardMarkup(
 		[]tgbotapi.InlineKeyboardButton{bookingButton},
 		[]tgbotapi.InlineKeyboardButton{mapsButton},
 		[]tgbotapi.InlineKeyboardButton{photosButton},
 		[]tgbotapi.InlineKeyboardButton{favoriteButton},
 	)
+
+	return &markup
 }

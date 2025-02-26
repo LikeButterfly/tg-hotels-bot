@@ -21,7 +21,7 @@ var numbersToMonths = map[string]string{
 	"12": "декабря",
 }
 
-// Преобразует строку с датой-временем в читаемый формат
+// GetReadableDateTime преобразует строку с датой-временем в читаемый формат
 func GetReadableDateTime(strDatetime string) string {
 	parts := strings.Split(strDatetime, " ")
 	if len(parts) < 2 {
@@ -35,7 +35,7 @@ func GetReadableDateTime(strDatetime string) string {
 	return fmt.Sprintf("%s, %s", strings.Join(correctTimeParts, ":"), GetReadableDate(date, "го"))
 }
 
-// Преобразует строку с датой в читаемый формат
+// GetReadableDate преобразует строку с датой в читаемый формат
 func GetReadableDate(strDate string, ending string) string {
 	parts := strings.Split(strDate, "-")
 	if len(parts) < 3 {

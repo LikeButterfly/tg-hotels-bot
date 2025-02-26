@@ -1,6 +1,9 @@
 package config
 
-import "os"
+import (
+	"net/http"
+	"os"
+)
 
 func GetCorrectRapidAPIKey() string {
 	if os.Getenv("REQUESTS_LIMIT_REACHED") == "False" {
@@ -17,11 +20,11 @@ func ChangeRapidAPIKey() {
 	}
 }
 
-func GetHeadersByCorrectRapidAPIKey() map[string]string {
-	return map[string]string{
-		"X-RapidAPI-Key":  GetCorrectRapidAPIKey(),
-		"X-RapidAPI-Host": "hotels4.p.rapidapi.com",
-	}
+func GetHeadersByCorrectRapidAPIKey() http.Header {
+	headers := http.Header{}
+	headers.Set("X-RapidAPI-Key", GetCorrectRapidAPIKey())
+	headers.Set("X-RapidAPI-Host", "hotels4.p.rapidapi.com")
+	return headers
 }
 
 func GetHeadersWithPayloadByCorrectRapidAPIKey() map[string]string {

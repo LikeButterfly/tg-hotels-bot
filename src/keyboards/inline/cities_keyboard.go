@@ -6,7 +6,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func CreateCitiesMarkup(cities map[string]int) tgbotapi.InlineKeyboardMarkup {
+func CreateCitiesMarkup(cities map[string]int) *tgbotapi.InlineKeyboardMarkup {
 	var rows [][]tgbotapi.InlineKeyboardButton
 	cityIndex := 1
 
@@ -19,5 +19,6 @@ func CreateCitiesMarkup(cities map[string]int) tgbotapi.InlineKeyboardMarkup {
 		cityIndex++
 	}
 
-	return tgbotapi.NewInlineKeyboardMarkup(rows...)
+	markup := tgbotapi.NewInlineKeyboardMarkup(rows...)
+	return &markup
 }

@@ -17,13 +17,13 @@ const (
 	collectionName = "History"
 )
 
-// Возвращает коллекцию истории пользователя
+// GetHistoryCollection возвращает коллекцию истории пользователя
 func GetHistoryCollection() *mongo.Collection {
 	client := GetMongoClient()
 	return client.Database(databaseName).Collection(collectionName)
 }
 
-// Добавляет команду в историю
+// AddCommandToHistory добавляет команду в историю
 func AddCommandToHistory(command string, callTime time.Time, userID int64) error {
 	collection := GetHistoryCollection()
 
@@ -72,7 +72,7 @@ func createHistoryDict(command string, callTime time.Time) map[string]any {
 	}
 }
 
-// Добавляет город в историю пользователя
+// AddCityToHistory добавляет город в историю пользователя
 func AddCityToHistory(city string, callTime time.Time, userID int64) error {
 	collection := GetHistoryCollection()
 	var user struct {

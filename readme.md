@@ -1,5 +1,10 @@
 # Tg hotels bot
 
+## Функционал
+
+- БД **облачный сервис** [MongoDB Atlas](https://www.mongodb.com/atlas/database).
+- [RapidAPI](https://rapidapi.com/apidojo/api/hotels4/)
+
 ...
 
 ## Notes

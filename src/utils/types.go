@@ -32,7 +32,7 @@ type HotelInfo struct {
 	Photo              Link
 	Coordinates        struct {
 		Lat Latitude
-		Lng Longitude
+		Lng Longitude // -> Lon
 	}
 }
 

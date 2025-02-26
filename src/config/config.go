@@ -35,13 +35,13 @@ func LoadConfig() *Config {
 			MongoDBPass: getEnv("MONGO_DB_PASSWORD", ""),
 			TimeOffset:  3 * time.Hour,
 			DefaultCommands: map[string]string{
-				"start":     "Запуск",
-				"help":      "Помощь",
-				"lowprice":  "Топ самых дешёвых отелей в городе",
-				"highprice": "Топ самых дорогих отелей в городе",
-				"bestdeal":  "Топ отелей, наиболее подходящих по цене и расположению от центра", // no support
-				"history":   "История",
-				"favorites": "Избранное", // no support
+				"start":    "Запуск",
+				"help":     "Помощь",
+				"lowprice": "Топ самых дешёвых отелей в городе",
+				// "highprice": "Топ самых дорогих отелей в городе",                                // no support
+				// "bestdeal":  "Топ отелей, наиболее подходящих по цене и расположению от центра", // no support
+				// "history": "История", // no support
+				// "favorites": "Избранное", // no support
 			},
 		}
 	})
