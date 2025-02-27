@@ -1,6 +1,6 @@
 package utils
 
-import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
 type KM float64
 type USD float64

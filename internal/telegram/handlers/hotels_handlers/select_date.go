@@ -3,15 +3,16 @@ package hotels_handlers
 import (
 	"fmt"
 	"log"
+	"time"
+
 	inline_keyboards "tg-hotels-bot/internal/keyboards/inline"
 	"tg-hotels-bot/internal/states"
 	misc_utils "tg-hotels-bot/internal/utils/misc"
-	"time"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-// StartSelectDateIn начинает процесс выбора даты заезда
+// Нначинает процесс выбора даты заезда
 func StartSelectDateIn(bot *tgbotapi.BotAPI, chatID int64, stateManager *states.StateManager) {
 	keyboard, step := inline_keyboards.CreateCalendar(time.Now()) // Передаём текущую дату как минимум
 
@@ -24,7 +25,7 @@ func StartSelectDateIn(bot *tgbotapi.BotAPI, chatID int64, stateManager *states.
 	stateManager.SetState(chatID, states.SelectDateIn)
 }
 
-// SelectDateIn обрабатывает выбор даты заезда
+// Обрабатывает выбор даты заезда
 func SelectDateIn(bot *tgbotapi.BotAPI, callback *tgbotapi.CallbackQuery, stateManager *states.StateManager, userData map[int64]time.Time) {
 	chatID := callback.Message.Chat.ID
 
@@ -48,7 +49,7 @@ func SelectDateIn(bot *tgbotapi.BotAPI, callback *tgbotapi.CallbackQuery, stateM
 	stateManager.SetState(chatID, states.IsDateCorrect)
 }
 
-// StartSelectDateOut начинает процесс выбора даты выезда
+// Начинает процесс выбора даты выезда
 func StartSelectDateOut(bot *tgbotapi.BotAPI, chatID int64, dateIn time.Time, stateManager *states.StateManager) {
 	keyboard, step := inline_keyboards.CreateCalendar(dateIn) // Передаём дату заезда как минимум
 
@@ -60,7 +61,7 @@ func StartSelectDateOut(bot *tgbotapi.BotAPI, chatID int64, dateIn time.Time, st
 	stateManager.SetState(chatID, states.SelectDateOut)
 }
 
-// SelectDateOut обрабатывает выбор даты выезда
+// Обрабатывает выбор даты выезда
 func SelectDateOut(bot *tgbotapi.BotAPI, callback *tgbotapi.CallbackQuery, stateManager *states.StateManager, userData map[int64]time.Time) {
 	chatID := callback.Message.Chat.ID
 	dateIn, exists := userData[chatID]
@@ -88,38 +89,48 @@ func SelectDateOut(bot *tgbotapi.BotAPI, callback *tgbotapi.CallbackQuery, state
 	stateManager.SetState(chatID, states.IsDateCorrect)
 }
 
-// SendConfirmationDate проверяет правильность выбранных дат
+// Проверяет правильность выбранных дат
 func SendConfirmationDate(bot *tgbotapi.BotAPI, callback *tgbotapi.CallbackQuery, stateManager *states.StateManager, userData map[int64]time.Time) {
 	chatID := callback.Message.Chat.ID
 	data := callback.Data
 
-	dateIn, _ := userData[chatID]
-	dateOut, _ := userData[chatID]
+	dateIn := userData[chatID]
+	dateOut := userData[chatID]
 
-	if data == "date_in_incorrect" {
-		bot.AnswerCallbackQuery(tgbotapi.NewCallback(callback.ID, "Попробуйте еще раз"))
-		bot.DeleteMessage(tgbotapi.NewDeleteMessage(chatID, callback.Message.MessageID))
-		StartSelectDateIn(bot, chatID, stateManager)
+	// FIXME - грязно...
+
+	switch data {
+	case "date_in_incorrect", "date_out_incorrect":
+		if _, err := bot.Send(tgbotapi.NewCallback(callback.ID, "Попробуйте еще раз")); err != nil {
+			log.Println("Ошибка ответа на callback:", err)
+		}
+		if _, err := bot.Send(tgbotapi.NewDeleteMessage(chatID, callback.Message.MessageID)); err != nil {
+			log.Println("Ошибка удаления сообщения:", err)
+		}
+		if data == "date_in_incorrect" {
+			StartSelectDateIn(bot, chatID, stateManager)
+		} else {
+			StartSelectDateOut(bot, chatID, dateIn, stateManager)
+		}
 		return
-	}
 
-	if data == "date_in_correct" {
-		bot.AnswerCallbackQuery(tgbotapi.NewCallback(callback.ID, "Укажите дату выезда"))
-		bot.DeleteMessage(tgbotapi.NewDeleteMessage(chatID, callback.Message.MessageID))
+	case "date_in_correct":
+		if _, err := bot.Send(tgbotapi.NewCallback(callback.ID, "Укажите дату выезда")); err != nil {
+			log.Println("Ошибка ответа на callback:", err)
+		}
+		if _, err := bot.Send(tgbotapi.NewDeleteMessage(chatID, callback.Message.MessageID)); err != nil {
+			log.Println("Ошибка удаления сообщения:", err)
+		}
 		StartSelectDateOut(bot, chatID, dateIn, stateManager)
 		return
-	}
 
-	if data == "date_out_incorrect" {
-		bot.AnswerCallbackQuery(tgbotapi.NewCallback(callback.ID, "Попробуйте еще раз"))
-		bot.DeleteMessage(tgbotapi.NewDeleteMessage(chatID, callback.Message.MessageID))
-		StartSelectDateOut(bot, chatID, dateIn, stateManager)
-		return
-	}
-
-	if data == "date_out_correct" {
-		bot.AnswerCallbackQuery(tgbotapi.NewCallback(callback.ID, "Дата выезда указана"))
-		bot.DeleteMessage(tgbotapi.NewDeleteMessage(chatID, callback.Message.MessageID))
+	case "date_out_correct":
+		if _, err := bot.Send(tgbotapi.NewCallback(callback.ID, "Дата выезда указана")); err != nil {
+			log.Println("Ошибка ответа на callback:", err)
+		}
+		if _, err := bot.Send(tgbotapi.NewDeleteMessage(chatID, callback.Message.MessageID)); err != nil {
+			log.Println("Ошибка удаления сообщения:", err)
+		}
 
 		// Отправляем сообщение с итоговой информацией
 		finalMsg := fmt.Sprintf(
@@ -127,12 +138,13 @@ func SendConfirmationDate(bot *tgbotapi.BotAPI, callback *tgbotapi.CallbackQuery
 			dateIn.Format("02.01.2006"),
 			dateOut.Format("02.01.2006"),
 		)
-
 		msg := tgbotapi.NewMessage(chatID, finalMsg)
 		msg.ReplyMarkup = misc_utils.IsCorrectMarkup("city_info")
 		msg.ParseMode = "HTML"
-		bot.Send(msg)
-
+		if _, err := bot.Send(msg); err != nil {
+			log.Println("Ошибка отправки сообщения:", err)
+		}
 		stateManager.SetState(chatID, states.IsInfoCorrect)
 	}
+
 }

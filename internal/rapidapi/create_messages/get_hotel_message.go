@@ -7,7 +7,7 @@ import (
 	"tg-hotels-bot/internal/utils"
 )
 
-// CreateHotelMessage создаёт сообщение с информацией об отеле
+// Создаёт сообщение с информацией об отеле
 func CreateHotelMessage(hotelInfo utils.HotelInfo) utils.HotelMessage {
 	text := fmt.Sprintf(
 		"<b>%s</b>\n%s"+
@@ -27,7 +27,7 @@ func CreateHotelMessage(hotelInfo utils.HotelInfo) utils.HotelMessage {
 	return utils.HotelMessage{Text: text, Photo: hotelInfo.Photo, Buttons: buttons}
 }
 
-// getStarsString возвращает строку с эмодзи звёзд
+// Возвращает строку с эмодзи звёзд
 func getStarsString(stars int) string {
 	if stars < 1 {
 		return ""

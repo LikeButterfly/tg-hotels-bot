@@ -6,10 +6,10 @@ import (
 
 	"tg-hotels-bot/internal/states"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-// FinishWithError отправляет сообщение об ошибке и завершает сценарий
+// Отправляет сообщение об ошибке и завершает сценарий
 func FinishWithError(bot *tgbotapi.BotAPI, chatID int64, errorText string, stateManager *states.StateManager, toDelete ...int) {
 	// Отправляем сообщение об ошибке
 	msg := tgbotapi.NewMessage(chatID, createErrorMessage(errorText))
@@ -25,7 +25,7 @@ func FinishWithError(bot *tgbotapi.BotAPI, chatID int64, errorText string, state
 	HandleStart(bot, &tgbotapi.Message{Chat: &tgbotapi.Chat{ID: chatID}}, stateManager)
 }
 
-// createErrorMessage создаёт текст ошибки
+// Создаёт текст ошибки
 func createErrorMessage(errorText string) string {
 	template := "⚠️ <b>%s</b>"
 

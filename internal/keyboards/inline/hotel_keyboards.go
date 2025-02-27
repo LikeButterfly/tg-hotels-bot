@@ -3,9 +3,9 @@ package keyboards
 import (
 	"fmt"
 
-	"tg-hotels-bot/internal/utils"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"tg-hotels-bot/internal/utils"
 )
 
 func CreateHotelKeyboard(info utils.HotelInfo) *tgbotapi.InlineKeyboardMarkup {

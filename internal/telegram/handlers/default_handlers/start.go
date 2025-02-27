@@ -5,11 +5,11 @@ import (
 	"tg-hotels-bot/internal/photos"
 	"tg-hotels-bot/internal/states"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func HandleStart(bot *tgbotapi.BotAPI, message *tgbotapi.Message, stateManager *states.StateManager) {
-	photo := tgbotapi.NewPhotoShare(message.Chat.ID, photos.Photos["home_menu"])
+	photo := tgbotapi.NewPhoto(message.Chat.ID, tgbotapi.FileURL(photos.Photos["home_menu"]))
 	photo.Caption = "<b>Выберите действие</b>"
 	photo.ParseMode = "HTML"
 	photo.ReplyMarkup = reply_keyboards.HomeMenuKeyboard()

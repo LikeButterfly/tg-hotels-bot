@@ -7,7 +7,7 @@ import (
 	"tg-hotels-bot/internal/states"
 	"tg-hotels-bot/internal/telegram/handlers"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 type Bot struct {
@@ -16,7 +16,7 @@ type Bot struct {
 	UserData     map[int64]map[string]string // Хранение данных пользователей
 }
 
-// NewBot создает новый экземпляр бота
+// Создает новый экземпляр бота
 func NewBot(bot *tgbotapi.BotAPI) *Bot {
 	return &Bot{
 		BotAPI:       bot,
@@ -25,7 +25,7 @@ func NewBot(bot *tgbotapi.BotAPI) *Bot {
 	}
 }
 
-// Start запускает бота
+// Запускает бота
 func (b *Bot) Start(cfg *config.Config) {
 	b.BotAPI.Debug = true
 	log.Printf("Авторизован как %s", b.BotAPI.Self.UserName)
@@ -36,11 +36,7 @@ func (b *Bot) Start(cfg *config.Config) {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 20
 
-	updates, err := b.BotAPI.GetUpdatesChan(u)
-	if err != nil {
-		log.Fatal("Ошибка получения обновлений:", err)
-	}
+	updates := b.BotAPI.GetUpdatesChan(u)
 
-	// Передаем stateManager и userData в обработчик команд
-	handlers.HandleCommands(b.BotAPI, updates, b.StateManager, b.UserData)
+	handlers.HandleCommands(cfg, b.BotAPI, updates, b.StateManager, b.UserData)
 }

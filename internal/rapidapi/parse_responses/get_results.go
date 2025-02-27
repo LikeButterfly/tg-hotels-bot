@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// getHotelsDict получает список отелей от RapidAPI
+// Получает список отелей от RapidAPI
 func getHotelsDict(command string, data map[string]any, page int) (map[string]any, error) {
 	sortBy := "PRICE_LOW_TO_HIGH"
 	if command == "highprice" {
@@ -25,7 +25,7 @@ func getHotelsDict(command string, data map[string]any, page int) (map[string]an
 	return hotelsDict, nil
 }
 
-// getResults парсит JSON-ответ API и возвращает список отелей
+// Парсит JSON-ответ API и возвращает список отелей
 func getResults(hotels map[string]any) ([]map[string]any, error) {
 	properties, ok := hotels["data"].(map[string]any)["propertySearch"].(map[string]any)["properties"].([]any)
 	if !ok {

@@ -6,7 +6,7 @@ import (
 )
 
 // Соответствие чисел и месяцев
-var numbersToMonths = map[string]string{
+var numbersToMonths = map[string]string{ // TODO - use format
 	"01": "января",
 	"02": "февраля",
 	"03": "марта",
@@ -21,7 +21,7 @@ var numbersToMonths = map[string]string{
 	"12": "декабря",
 }
 
-// GetReadableDateTime преобразует строку с датой-временем в читаемый формат
+// Преобразует строку с датой-временем в читаемый формат
 func GetReadableDateTime(strDatetime string) string {
 	parts := strings.Split(strDatetime, " ")
 	if len(parts) < 2 {
@@ -35,7 +35,7 @@ func GetReadableDateTime(strDatetime string) string {
 	return fmt.Sprintf("%s, %s", strings.Join(correctTimeParts, ":"), GetReadableDate(date, "го"))
 }
 
-// GetReadableDate преобразует строку с датой в читаемый формат
+// Преобразует строку с датой в читаемый формат
 func GetReadableDate(strDate string, ending string) string {
 	parts := strings.Split(strDate, "-")
 	if len(parts) < 3 {

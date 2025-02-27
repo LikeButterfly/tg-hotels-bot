@@ -2,22 +2,24 @@ package hotels_handlers
 
 import (
 	"log"
+	"time"
+
+	"tg-hotels-bot/internal/config"
 	"tg-hotels-bot/internal/database"
 	"tg-hotels-bot/internal/rapidapi/create_messages"
 	"tg-hotels-bot/internal/states"
 	"tg-hotels-bot/internal/telegram/handlers/default_handlers"
 	"tg-hotels-bot/internal/utils/work_with_messages"
-	"time"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-// GetCitiesByName обрабатывает ввод города от пользователя
-func GetCitiesByName(bot *tgbotapi.BotAPI, message *tgbotapi.Message, stateManager *states.StateManager) {
+// Обрабатывает ввод города от пользователя
+func GetCitiesByName(cfg *config.Config, bot *tgbotapi.BotAPI, message *tgbotapi.Message, stateManager *states.StateManager) {
 	city := message.Text
 
 	// Добавляем город в историю MongoDB
-	AddCityNameToDB(bot, message.Chat.ID, city)
+	AddCityNameToDB(cfg, bot, message.Chat.ID, city)
 
 	// Отправляем сообщение "Ожидание" и получаем ID сообщений для удаления
 	textMsgID, stickerMsgID := work_with_messages.SendWaitingMessage(bot, message.Chat.ID)
@@ -40,12 +42,12 @@ func GetCitiesByName(bot *tgbotapi.BotAPI, message *tgbotapi.Message, stateManag
 	stateManager.SetState(message.Chat.ID, states.SelectCity)
 }
 
-// AddCityNameToDB добавляет город в историю пользователя
-func AddCityNameToDB(bot *tgbotapi.BotAPI, chatID int64, cityName string) {
+// Добавляет город в историю пользователя
+func AddCityNameToDB(cfg *config.Config, bot *tgbotapi.BotAPI, chatID int64, cityName string) {
 	// Получаем время команды из истории состояний
 	callTime := time.Now() // Если в будущем нужно будет сохранять время в StateManager
 
-	err := database.AddCityToHistory(cityName, callTime, chatID)
+	err := database.AddCityToHistory(cfg, cityName, callTime, chatID)
 	if err != nil {
 		log.Printf("Ошибка добавления города в историю: %v", err)
 	}

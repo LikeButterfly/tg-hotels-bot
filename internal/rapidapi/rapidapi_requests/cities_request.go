@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-// GetCitiesJSON - запрос для поиска городов
+// Запрос для поиска городов
 func GetCitiesJSON(city string) (map[string]any, error) {
 	url := "https://hotels4.p.rapidapi.com/locations/v3/search"
 

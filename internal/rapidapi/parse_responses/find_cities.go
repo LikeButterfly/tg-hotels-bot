@@ -6,7 +6,7 @@ import (
 	"tg-hotels-bot/internal/rapidapi/rapidapi_requests"
 )
 
-// FindCities ищет города по названию
+// Ищет города по названию
 func FindCities(city string) (map[string]int, error) {
 	citiesDict, err := rapidapi_requests.GetCitiesJSON(city)
 	if err != nil {

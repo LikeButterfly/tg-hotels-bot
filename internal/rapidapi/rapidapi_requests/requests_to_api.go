@@ -11,7 +11,7 @@ import (
 	"tg-hotels-bot/internal/config"
 )
 
-// RequestToAPI - GET-запрос к RapidAPI
+// GET-запрос к RapidAPI
 func RequestToAPI(url string, queryParams map[string]string) (map[string]any, error) {
 	client := &http.Client{Timeout: 10 * time.Second}
 
@@ -61,7 +61,7 @@ func RequestToAPI(url string, queryParams map[string]string) (map[string]any, er
 	return responseJSON, nil
 }
 
-// RequestToAPIWithPayload - POST-запрос к RapidAPI
+// POST-запрос к RapidAPI
 func RequestToAPIWithPayload(url string, payload map[string]any) (map[string]any, error) {
 	client := &http.Client{Timeout: 10 * time.Second}
 

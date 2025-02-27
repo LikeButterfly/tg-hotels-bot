@@ -1,7 +1,7 @@
 package work_with_messages
 
 import (
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func SendWaitingMessage(bot *tgbotapi.BotAPI, chatID int64) (int, int) {
@@ -9,7 +9,7 @@ func SendWaitingMessage(bot *tgbotapi.BotAPI, chatID int64) (int, int) {
 	textMsg.ParseMode = "HTML"
 	sentText, _ := bot.Send(textMsg)
 
-	stickerMsg := tgbotapi.NewStickerShare(chatID, "CAACAgIAAxkBAAEGPdBjXOSiezHXCIYn3k_DU2Nx_khoVwAC6BUAAiMlyUtQqGgG1fAXAAEqBA")
+	stickerMsg := tgbotapi.NewSticker(chatID, tgbotapi.FileID("CAACAgIAAxkBAAEGPdBjXOSiezHXCIYn3k_DU2Nx_khoVwAC6BUAAiMlyUtQqGgG1fAXAAEqBA"))
 	sentSticker, _ := bot.Send(stickerMsg)
 
 	return sentText.MessageID, sentSticker.MessageID

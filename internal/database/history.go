@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	"tg-hotels-bot/internal/config"
 	misc_utils "tg-hotels-bot/internal/utils/misc"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -17,21 +18,28 @@ const (
 	collectionName = "History"
 )
 
-// GetHistoryCollection возвращает коллекцию истории пользователя
-func GetHistoryCollection() *mongo.Collection {
-	client := GetMongoClient()
-	return client.Database(databaseName).Collection(collectionName)
+// Возвращает коллекцию истории пользователя
+func GetHistoryCollection(cfg *config.Config) (*mongo.Collection, error) {
+	client, err := GetMongoClient(cfg)
+	if err != nil {
+		return nil, fmt.Errorf("Ошибка подключения к MongoDB: ", err)
+	}
+
+	return client.Database(databaseName).Collection(collectionName), nil
 }
 
-// AddCommandToHistory добавляет команду в историю
-func AddCommandToHistory(command string, callTime time.Time, userID int64) error {
-	collection := GetHistoryCollection()
+// Добавляет команду в историю
+func AddCommandToHistory(cfg *config.Config, command string, callTime time.Time, userID int64) error {
+	collection, err := GetHistoryCollection(cfg)
+	if err != nil {
+		return err
+	}
 
 	// Проверяем, есть ли пользователь в базе
 	var user struct {
 		History map[string]map[string]any `bson:"history"`
 	}
-	err := collection.FindOne(context.TODO(), bson.M{"_id": userID}).Decode(&user)
+	err = collection.FindOne(context.TODO(), bson.M{"_id": userID}).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return createHistory(collection, command, callTime, userID)
@@ -72,13 +80,17 @@ func createHistoryDict(command string, callTime time.Time) map[string]any {
 	}
 }
 
-// AddCityToHistory добавляет город в историю пользователя
-func AddCityToHistory(city string, callTime time.Time, userID int64) error {
-	collection := GetHistoryCollection()
+// Добавляет город в историю пользователя
+func AddCityToHistory(cfg *config.Config, city string, callTime time.Time, userID int64) error {
+	collection, err := GetHistoryCollection(cfg)
+	if err != nil {
+		return err
+	}
+
 	var user struct {
 		History map[string]map[string]any `bson:"history"`
 	}
-	err := collection.FindOne(context.TODO(), bson.M{"_id": userID}).Decode(&user)
+	err = collection.FindOne(context.TODO(), bson.M{"_id": userID}).Decode(&user)
 	if err != nil {
 		log.Println("Ошибка поиска пользователя в истории:", err)
 		return err

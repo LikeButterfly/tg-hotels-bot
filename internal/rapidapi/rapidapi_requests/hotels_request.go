@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// GetHotelsJSON - запрос для поиска отелей
+// Запрос для поиска отелей
 func GetHotelsJSON(destinationID string, dateIn, dateOut time.Time, sortBy string, page int) (map[string]any, error) {
 	url := "https://hotels4.p.rapidapi.com/properties/v2/list"
 

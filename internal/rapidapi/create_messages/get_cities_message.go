@@ -2,12 +2,13 @@ package create_messages
 
 import (
 	"fmt"
+
 	inline_keyboards "tg-hotels-bot/internal/keyboards/inline"
 	"tg-hotels-bot/internal/rapidapi/parse_responses"
 	"tg-hotels-bot/internal/utils"
 )
 
-// CreateCitiesMessage создаёт сообщение с найденными городами
+// Создаёт сообщение с найденными городами
 func CreateCitiesMessage(city string) (utils.CitiesMessage, error) {
 	found, err := parse_responses.FindCities(city)
 	if err != nil {

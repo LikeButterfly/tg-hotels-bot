@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// HotelInfo содержит информацию об отеле
+// Содержит информацию об отеле
 type HotelInfo struct {
 	ID                 string
 	Name               string
@@ -21,7 +21,7 @@ type HotelInfo struct {
 	Longitude          float64
 }
 
-// GetHotelsInfo ищет отели по параметрам
+// Ищет отели по параметрам
 func GetHotelsInfo(data map[string]any, page int) ([]HotelInfo, error) {
 	command, _ := data["command_type"].(string)
 	dateIn, _ := data["date_in"].(time.Time)
@@ -45,7 +45,7 @@ func GetHotelsInfo(data map[string]any, page int) ([]HotelInfo, error) {
 	return parseHotelsInfo(results, dateIn, dateOut), nil
 }
 
-// parseHotelsInfo парсит список отелей
+// Парсит список отелей
 func parseHotelsInfo(results []map[string]any, dateIn, dateOut time.Time) []HotelInfo {
 	var hotels []HotelInfo
 	daysIn := int(dateOut.Sub(dateIn).Hours() / 24)

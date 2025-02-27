@@ -33,14 +33,14 @@ type StateManager struct {
 	states map[int64]StateType
 }
 
-// NewStateManager создаёт менеджер состояний
+// Создаёт менеджер состояний
 func NewStateManager() *StateManager {
 	return &StateManager{
 		states: make(map[int64]StateType),
 	}
 }
 
-// SetState устанавливает состояние для пользователя
+// Устанавливает состояние для пользователя
 func (sm *StateManager) SetState(userID int64, state StateType) {
 	sm.mu.Lock()
 	defer sm.mu.Unlock()
@@ -48,7 +48,7 @@ func (sm *StateManager) SetState(userID int64, state StateType) {
 	log.Printf("User %d switched to state: %d\n", userID, state)
 }
 
-// GetState получает текущее состояние пользователя
+// Получает текущее состояние пользователя
 func (sm *StateManager) GetState(userID int64) (StateType, bool) {
 	sm.mu.RLock()
 	defer sm.mu.RUnlock()
@@ -56,7 +56,7 @@ func (sm *StateManager) GetState(userID int64) (StateType, bool) {
 	return state, exists
 }
 
-// ClearState сбрасывает состояние пользователя
+// Сбрасывает состояние пользователя
 func (sm *StateManager) ClearState(userID int64) {
 	sm.mu.Lock()
 	defer sm.mu.Unlock()

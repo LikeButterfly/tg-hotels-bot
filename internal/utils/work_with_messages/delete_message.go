@@ -3,7 +3,7 @@ package work_with_messages
 import (
 	"log"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func DeleteMessage(bot *tgbotapi.BotAPI, chatID int64, messageID int) {

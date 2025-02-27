@@ -4,16 +4,17 @@ import (
 	"log"
 	"strings"
 
+	"tg-hotels-bot/internal/config"
 	"tg-hotels-bot/internal/states"
 	"tg-hotels-bot/internal/telegram/handlers/action_handlers"
 	"tg-hotels-bot/internal/telegram/handlers/default_handlers"
 	"tg-hotels-bot/internal/telegram/handlers/hotels_handlers"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-// HandleCommands обрабатывает входящие сообщения и команды
-func HandleCommands(bot *tgbotapi.BotAPI, updates tgbotapi.UpdatesChannel, stateManager *states.StateManager, userData map[int64]map[string]string) {
+// Обрабатывает входящие сообщения и команды
+func HandleCommands(cfg *config.Config, bot *tgbotapi.BotAPI, updates tgbotapi.UpdatesChannel, stateManager *states.StateManager, userData map[int64]map[string]string) {
 	for update := range updates {
 		// === ОБРАБОТКА CALLBACK-ЗАПРОСОВ (Inline-кнопки) ===
 
@@ -52,7 +53,7 @@ func HandleCommands(bot *tgbotapi.BotAPI, updates tgbotapi.UpdatesChannel, state
 
 		// Команды поиска отелей (пока только lowprice)
 		case "/lowprice":
-			action_handlers.DefineState(bot, update.Message, stateManager, userData)
+			action_handlers.DefineState(cfg, bot, update.Message, stateManager, userData)
 
 		default:
 			if strings.HasPrefix(text, "/") {
@@ -64,7 +65,7 @@ func HandleCommands(bot *tgbotapi.BotAPI, updates tgbotapi.UpdatesChannel, state
 				if exists {
 					switch state {
 					case states.WaitCityName:
-						hotels_handlers.GetCitiesByName(bot, update.Message, stateManager)
+						hotels_handlers.GetCitiesByName(cfg, bot, update.Message, stateManager)
 					default:
 						log.Printf("Необработанное сообщение: %s", text)
 					}

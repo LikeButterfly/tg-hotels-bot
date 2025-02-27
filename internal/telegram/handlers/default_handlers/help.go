@@ -3,7 +3,7 @@ package default_handlers
 import (
 	"tg-hotels-bot/internal/photos"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 // Текст справки
@@ -31,7 +31,7 @@ var helpText = `<b>Поиск отелей:</b>
 `
 
 func HandleHelp(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
-	photo := tgbotapi.NewPhotoShare(message.Chat.ID, photos.Photos["help"])
+	photo := tgbotapi.NewPhoto(message.Chat.ID, tgbotapi.FileURL(photos.Photos["help"]))
 	photo.Caption = helpText
 	photo.ParseMode = "HTML"
 	photo.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)

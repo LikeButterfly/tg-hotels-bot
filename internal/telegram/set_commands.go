@@ -1,45 +1,26 @@
 package telegram
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
 	"log"
-	"net/http"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
 	"tg-hotels-bot/internal/config"
 )
 
-type BotCommand struct {
-	Command     string `json:"command"`
-	Description string `json:"description"`
-}
-
 func (b *Bot) SetDefaultCommands(cfg *config.Config) {
-	url := fmt.Sprintf("https://api.telegram.org/bot%s/setMyCommands", b.BotAPI.Token) // FIXME??
-
-	var commands []BotCommand
-	for cmd, desc := range cfg.DefaultCommands {
-		commands = append(commands, BotCommand{Command: cmd, Description: desc})
+	var commands []tgbotapi.BotCommand
+	for _, cmd := range config.DefaultCommands {
+		commands = append(commands, tgbotapi.BotCommand{
+			Command:     cmd.Command,
+			Description: cmd.Desc,
+		})
 	}
 
-	payload, err := json.Marshal(map[string]any{
-		"commands": commands,
-	})
+	setCmdCfg := tgbotapi.NewSetMyCommands(commands...)
+	_, err := b.BotAPI.Request(setCmdCfg)
 	if err != nil {
-		log.Println("Ошибка сериализации команд:", err)
-		return
-	}
-
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(payload))
-	if err != nil {
-		log.Println("Ошибка запроса к Telegram API:", err)
-		return
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		log.Printf("Ошибка установки команд: %d\n", resp.StatusCode)
+		log.Println("Ошибка установки команд:", err)
 		return
 	}
 

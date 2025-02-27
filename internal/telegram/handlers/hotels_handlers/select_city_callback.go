@@ -3,12 +3,13 @@ package hotels_handlers
 import (
 	"log"
 	"strings"
-	"tg-hotels-bot/internal/states"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+
+	"tg-hotels-bot/internal/states"
 )
 
-// SetCityID обрабатывает выбор города пользователем
+// Обрабатывает выбор города пользователем
 func SetCityID(bot *tgbotapi.BotAPI, callback *tgbotapi.CallbackQuery, stateManager *states.StateManager, userData map[int64]map[string]string) {
 	chatID := callback.Message.Chat.ID
 
@@ -26,7 +27,9 @@ func SetCityID(bot *tgbotapi.BotAPI, callback *tgbotapi.CallbackQuery, stateMana
 	userData[chatID]["city_id"] = cityID
 
 	// Отправляем подтверждение выбора города
-	bot.AnswerCallbackQuery(tgbotapi.NewCallback(callback.ID, "Город выбран"))
+	callbackConfig := tgbotapi.NewCallback(callback.ID, "Город выбран")
+	bot.Send(callbackConfig)
+
 	editMsg := tgbotapi.NewEditMessageText(chatID, callback.Message.MessageID, "<b>Город выбран!</b>")
 	editMsg.ParseMode = "HTML"
 	bot.Send(editMsg)

@@ -14,7 +14,7 @@ import (
 const metaDataURL = "https://hotels4.p.rapidapi.com/v2/get-meta-data" // FIXME тоже вынести бы по хорошему
 const country = "US"
 
-// FetchMetaData запрашивает мета-данные и устанавливает переменные окружения
+// Запрашивает мета-данные и устанавливает переменные окружения
 func FetchMetaData() error {
 	client := &http.Client{
 		Timeout: 10 * time.Second, // Таймаут запроса
@@ -66,7 +66,7 @@ func FetchMetaData() error {
 	return nil
 }
 
-// setEnvRapidAPIVars устанавливает переменные окружения
+// Устанавливает переменные окружения
 func setEnvRapidAPIVars(countryData map[string]any) {
 	os.Setenv("SITE_ID", toString(countryData["siteId"]))
 	os.Setenv("EAPID", toString(countryData["EAPID"]))
@@ -79,8 +79,8 @@ func setEnvRapidAPIVars(countryData map[string]any) {
 	}
 }
 
-// toString конвертирует значение в строку
-func toString(value any) string {
+// Конвертирует значение в строку
+func toString(value any) string { // FIXME избавиться
 	if str, ok := value.(string); ok {
 		return str
 	}
