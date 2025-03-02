@@ -10,20 +10,18 @@ import (
 
 // Создаёт сообщение с найденными городами
 func CreateCitiesMessage(city string) (utils.CitiesMessage, error) {
-	found, err := parse_responses.FindCities(city)
+	cities, err := parse_responses.FindCities(city)
 	if err != nil {
 		return utils.CitiesMessage{}, err
 	}
 
 	var text string
-	if len(found) == 1 {
-		for cityName := range found {
-			text = fmt.Sprintf("<b>Искать в городе %s?</b>", cityName)
-		}
+	if len(cities) == 1 {
+		text = fmt.Sprintf("<b>Искать в городе %s?</b>", cities[0].Name)
 	} else {
 		text = "<b>Пожалуйста, уточните город</b>"
 	}
 
-	buttons := inline_keyboards.CreateCitiesMarkup(found)
+	buttons := inline_keyboards.CreateCitiesMarkup(cities)
 	return utils.CitiesMessage{Message: text, Buttons: buttons}, nil
 }

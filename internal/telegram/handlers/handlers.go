@@ -4,17 +4,24 @@ import (
 	"log"
 	"strings"
 
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+
 	"tg-hotels-bot/internal/config"
+	"tg-hotels-bot/internal/models"
 	"tg-hotels-bot/internal/states"
 	"tg-hotels-bot/internal/telegram/handlers/action_handlers"
 	"tg-hotels-bot/internal/telegram/handlers/default_handlers"
 	"tg-hotels-bot/internal/telegram/handlers/hotels_handlers"
-
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 // Обрабатывает входящие сообщения и команды
-func HandleCommands(cfg *config.Config, bot *tgbotapi.BotAPI, updates tgbotapi.UpdatesChannel, stateManager *states.StateManager, userData map[int64]map[string]string) {
+func HandleCommands(
+	cfg *config.Config,
+	bot *tgbotapi.BotAPI,
+	updates tgbotapi.UpdatesChannel,
+	stateManager *states.StateManager,
+	usersData map[int64]*models.UserData,
+) {
 	for update := range updates {
 		// === ОБРАБОТКА CALLBACK-ЗАПРОСОВ (Inline-кнопки) ===
 
@@ -26,7 +33,13 @@ func HandleCommands(cfg *config.Config, bot *tgbotapi.BotAPI, updates tgbotapi.U
 
 			// Если пользователь выбирает город
 			if strings.HasPrefix(callbackData, "search_in_city") {
-				hotels_handlers.SetCityID(bot, update.CallbackQuery, stateManager, userData)
+				hotels_handlers.SetCityID(bot, update.CallbackQuery, stateManager, usersData)
+				continue
+			}
+
+			// Подтверждение пользователем выбора города и дат
+			if strings.HasPrefix(callbackData, "city_info") {
+				hotels_handlers.ConfirmCityInfo(bot, update.CallbackQuery, stateManager, usersData)
 				continue
 			}
 		}
@@ -51,9 +64,8 @@ func HandleCommands(cfg *config.Config, bot *tgbotapi.BotAPI, updates tgbotapi.U
 		case "/help", "Справка":
 			default_handlers.HandleHelp(bot, update.Message)
 
-		// Команды поиска отелей (пока только lowprice)
-		case "/lowprice":
-			action_handlers.DefineState(cfg, bot, update.Message, stateManager, userData)
+		case "/lowprice", "Недорогие отели":
+			action_handlers.ShowLowprice(cfg, bot, update.Message, stateManager, usersData)
 
 		default:
 			if strings.HasPrefix(text, "/") {
@@ -66,6 +78,15 @@ func HandleCommands(cfg *config.Config, bot *tgbotapi.BotAPI, updates tgbotapi.U
 					switch state {
 					case states.WaitCityName:
 						hotels_handlers.GetCitiesByName(cfg, bot, update.Message, stateManager)
+
+					// Ожидаем ввод даты заезда
+					case states.SelectDateIn:
+						hotels_handlers.SelectDateIn(bot, update.Message, stateManager, usersData)
+
+					// Ожидаем ввод даты выезда
+					case states.SelectDateOut:
+						hotels_handlers.SelectDateOut(bot, update.Message, stateManager, usersData)
+
 					default:
 						log.Printf("Необработанное сообщение: %s", text)
 					}

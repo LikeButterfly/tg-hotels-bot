@@ -3,6 +3,7 @@ package create_messages
 import (
 	"fmt"
 	"strings"
+
 	inline_keyboards "tg-hotels-bot/internal/keyboards/inline"
 	"tg-hotels-bot/internal/utils"
 )

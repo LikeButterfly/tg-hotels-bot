@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"log"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+
 	"tg-hotels-bot/internal/config"
 	"tg-hotels-bot/internal/database"
 	"tg-hotels-bot/internal/rapidapi/rapidapi_requests"
 	"tg-hotels-bot/internal/telegram"
-
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func main() {
@@ -48,5 +49,5 @@ func main() {
 
 	bot := telegram.NewBot(botApi)
 
-	bot.Start(cfg)
+	telegram.Start(cfg, bot)
 }

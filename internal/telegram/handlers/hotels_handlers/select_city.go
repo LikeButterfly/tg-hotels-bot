@@ -1,8 +1,11 @@
 package hotels_handlers
 
 import (
+	"fmt"
 	"log"
 	"time"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
 	"tg-hotels-bot/internal/config"
 	"tg-hotels-bot/internal/database"
@@ -10,8 +13,6 @@ import (
 	"tg-hotels-bot/internal/states"
 	"tg-hotels-bot/internal/telegram/handlers/default_handlers"
 	"tg-hotels-bot/internal/utils/work_with_messages"
-
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 // Обрабатывает ввод города от пользователя
@@ -30,6 +31,7 @@ func GetCitiesByName(cfg *config.Config, bot *tgbotapi.BotAPI, message *tgbotapi
 
 	if err != nil {
 		default_handlers.FinishWithError(bot, message.Chat.ID, "cities_not_found", stateManager)
+		fmt.Println(err)
 		return
 	}
 

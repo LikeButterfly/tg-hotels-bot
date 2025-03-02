@@ -16,9 +16,7 @@ const (
 	SelectCity
 
 	// SelectDates
-	StartSelectDateIn
 	SelectDateIn
-	StartSelectDateOut
 	SelectDateOut
 	IsDateCorrect
 

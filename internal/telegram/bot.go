@@ -3,40 +3,35 @@ package telegram
 import (
 	"log"
 
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+
 	"tg-hotels-bot/internal/config"
+	"tg-hotels-bot/internal/models"
 	"tg-hotels-bot/internal/states"
 	"tg-hotels-bot/internal/telegram/handlers"
-
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-type Bot struct {
-	BotAPI       *tgbotapi.BotAPI
-	StateManager *states.StateManager
-	UserData     map[int64]map[string]string // Хранение данных пользователей
-}
-
 // Создает новый экземпляр бота
-func NewBot(bot *tgbotapi.BotAPI) *Bot {
-	return &Bot{
+func NewBot(bot *tgbotapi.BotAPI) *models.Bot {
+	return &models.Bot{
 		BotAPI:       bot,
 		StateManager: states.NewStateManager(),
-		UserData:     make(map[int64]map[string]string),
+		UsersData:    make(map[int64]*models.UserData),
 	}
 }
 
 // Запускает бота
-func (b *Bot) Start(cfg *config.Config) {
-	b.BotAPI.Debug = true
-	log.Printf("Авторизован как %s", b.BotAPI.Self.UserName)
+func Start(cfg *config.Config, bot *models.Bot) {
+	bot.BotAPI.Debug = false
+	log.Printf("Авторизован как %s", bot.BotAPI.Self.UserName)
 
-	b.SetDefaultCommands(cfg)
+	SetDefaultCommands(cfg, bot)
 
 	// Настраиваем поллер (длинные запросы)
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 20
 
-	updates := b.BotAPI.GetUpdatesChan(u)
+	updates := bot.BotAPI.GetUpdatesChan(u)
 
-	handlers.HandleCommands(cfg, b.BotAPI, updates, b.StateManager, b.UserData)
+	handlers.HandleCommands(cfg, bot.BotAPI, updates, bot.StateManager, bot.UsersData)
 }

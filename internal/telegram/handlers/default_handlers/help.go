@@ -1,9 +1,9 @@
 package default_handlers
 
 import (
-	"tg-hotels-bot/internal/photos"
-
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+
+	"tg-hotels-bot/internal/photos"
 )
 
 // Текст справки

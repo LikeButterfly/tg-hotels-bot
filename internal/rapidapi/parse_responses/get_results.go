@@ -2,8 +2,9 @@ package parse_responses
 
 import (
 	"errors"
-	"tg-hotels-bot/internal/rapidapi/rapidapi_requests"
 	"time"
+
+	"tg-hotels-bot/internal/rapidapi/rapidapi_requests"
 )
 
 // Получает список отелей от RapidAPI

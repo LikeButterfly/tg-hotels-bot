@@ -2,11 +2,11 @@ package default_handlers
 
 import (
 	"fmt"
-	"tg-hotels-bot/internal/utils/work_with_messages"
-
-	"tg-hotels-bot/internal/states"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+
+	"tg-hotels-bot/internal/states"
+	"tg-hotels-bot/internal/utils/work_with_messages"
 )
 
 // Отправляет сообщение об ошибке и завершает сценарий

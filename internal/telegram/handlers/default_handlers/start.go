@@ -1,11 +1,11 @@
 package default_handlers
 
 import (
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+
 	reply_keyboards "tg-hotels-bot/internal/keyboards/reply"
 	"tg-hotels-bot/internal/photos"
 	"tg-hotels-bot/internal/states"
-
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func HandleStart(bot *tgbotapi.BotAPI, message *tgbotapi.Message, stateManager *states.StateManager) {

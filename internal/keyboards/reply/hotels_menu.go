@@ -9,11 +9,11 @@ func HomeMenuKeyboard() tgbotapi.ReplyKeyboardMarkup {
 		),
 		tgbotapi.NewKeyboardButtonRow(
 			tgbotapi.NewKeyboardButton("Недорогие отели"),
-			tgbotapi.NewKeyboardButton("Дорогие отели"),
+			// tgbotapi.NewKeyboardButton("Дорогие отели"),
 		),
-		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("Поиск с параметрами"),
-		),
+		// tgbotapi.NewKeyboardButtonRow(
+		// 	tgbotapi.NewKeyboardButton("Поиск с параметрами"),
+		// ),
 		tgbotapi.NewKeyboardButtonRow(
 			tgbotapi.NewKeyboardButton("История поиска"),
 			tgbotapi.NewKeyboardButton("Избранное"),

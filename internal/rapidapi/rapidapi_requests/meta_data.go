@@ -7,29 +7,36 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"tg-hotels-bot/internal/config"
 	"time"
+
+	"tg-hotels-bot/internal/config"
 )
 
 const metaDataURL = "https://hotels4.p.rapidapi.com/v2/get-meta-data" // FIXME тоже вынести бы по хорошему
 const country = "US"
 
+type CountryMetaData struct {
+	SiteID           json.Number      `json:"siteId"`
+	EAPID            json.Number      `json:"EAPID"`
+	SupportedLocales []LocaleMetaData `json:"supportedLocales"`
+}
+
+type LocaleMetaData struct {
+	LocaleIdentifier   string      `json:"localeIdentifier"`
+	LanguageIdentifier json.Number `json:"languageIdentifier"`
+}
+
 // Запрашивает мета-данные и устанавливает переменные окружения
 func FetchMetaData() error {
-	client := &http.Client{
-		Timeout: 10 * time.Second, // Таймаут запроса
-	}
+	client := &http.Client{Timeout: 10 * time.Second}
 
 	req, err := http.NewRequest("GET", metaDataURL, nil)
 	if err != nil {
 		log.Println("Ошибка при создании запроса:", err)
 		return err
 	}
-
-	// Устанавливаем заголовки RapidAPI
 	req.Header = config.GetHeadersByCorrectRapidAPIKey()
 
-	// Отправляем запрос
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -40,52 +47,35 @@ func FetchMetaData() error {
 	}
 	defer resp.Body.Close()
 
-	// Если API вернул 429 (лимит запросов) — меняем ключ
 	if resp.StatusCode == http.StatusTooManyRequests {
 		config.ChangeRapidAPIKey()
-		return err
+		return fmt.Errorf("rate limit exceeded")
 	}
 
-	// Декодируем JSON-ответ
-	var responseJSON map[string]any
-	if err := json.NewDecoder(resp.Body).Decode(&responseJSON); err != nil {
+	// Декодируем ответ в типизированную структуру.
+	var metaData map[string]CountryMetaData
+	if err := json.NewDecoder(resp.Body).Decode(&metaData); err != nil {
 		log.Println("Ошибка декодирования JSON:", err)
 		return err
 	}
 
-	// Извлекаем данные по стране
-	countryData, exists := responseJSON[country].(map[string]any)
+	countryData, exists := metaData[country]
 	if !exists {
 		log.Println("Ошибка: данные о стране не найдены")
-		return err
+		return fmt.Errorf("country data not found")
 	}
 
-	// Устанавливаем переменные окружения
 	setEnvRapidAPIVars(countryData)
-
 	return nil
 }
 
 // Устанавливает переменные окружения
-func setEnvRapidAPIVars(countryData map[string]any) {
-	os.Setenv("SITE_ID", toString(countryData["siteId"]))
-	os.Setenv("EAPID", toString(countryData["EAPID"]))
-
-	if supportedLocales, ok := countryData["supportedLocales"].([]any); ok && len(supportedLocales) > 0 {
-		if localeData, ok := supportedLocales[0].(map[string]any); ok {
-			os.Setenv("LOCALE_IDENTIFIER", toString(localeData["localeIdentifier"]))
-			os.Setenv("LANGUAGE_IDENTIFIER", toString(localeData["languageIdentifier"]))
-		}
+func setEnvRapidAPIVars(data CountryMetaData) {
+	os.Setenv("SITE_ID", data.SiteID.String())
+	os.Setenv("EAPID", data.EAPID.String())
+	if len(data.SupportedLocales) > 0 {
+		locale := data.SupportedLocales[0]
+		os.Setenv("LOCALE_IDENTIFIER", locale.LocaleIdentifier)
+		os.Setenv("LANGUAGE_IDENTIFIER", locale.LanguageIdentifier.String())
 	}
-}
-
-// Конвертирует значение в строку
-func toString(value any) string { // FIXME избавиться
-	if str, ok := value.(string); ok {
-		return str
-	}
-	if num, ok := value.(float64); ok {
-		return fmt.Sprintf("%.0f", num) // Преобразование float в int -> string
-	}
-	return ""
 }
