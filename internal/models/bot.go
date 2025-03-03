@@ -12,7 +12,7 @@ type UserData struct {
 	CityID          string
 	DateIn          time.Time
 	DateOut         time.Time
-	CommandType     string
+	CommandType     CommandType
 	CommandCallTime string
 	HotelsInfo      []HotelInfo
 	HotelIndex      int

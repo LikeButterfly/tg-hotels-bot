@@ -4,6 +4,7 @@
 
 - БД **облачный сервис** [MongoDB Atlas](https://www.mongodb.com/atlas/database).
 - [RapidAPI](https://rapidapi.com/apidojo/api/hotels4/)
+- [Unsplash](https://unsplash.com)
 
 ...
 
@@ -11,6 +12,26 @@
 
 ### Подготовка проекта
 
-- `go clean -cache` - Удаляем кэш старой сборки
-- `make build`  - Соберет бинарник в .bin/bot
-- `make run`    - Соберет и запустит бота
+- Удаляем кэш старой сборки
+
+```bash
+go clean -cache
+```
+
+- Соберет бинарник в .bin/bot
+
+```bash
+make build
+```
+
+- Соберет и запустит бота
+
+```bash
+make run
+```
+
+### Линтер
+
+```bash
+golangci-lint run
+```

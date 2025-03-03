@@ -9,24 +9,18 @@ import (
 	"tg-hotels-bot/internal/config"
 	"tg-hotels-bot/internal/database"
 	"tg-hotels-bot/internal/models"
-	"tg-hotels-bot/internal/photos"
-	"tg-hotels-bot/internal/states"
-)
 
-// Обрабатывает команды "/lowprice", "/highprice", "/bestdeal"
-func DefineState(cfg *config.Config, bot *tgbotapi.BotAPI, message *tgbotapi.Message, stateManager *states.StateManager, usersData map[int64]*models.UserData) {
-	command := message.Text[1:] // Убираем "/"
-	handleSearchCommand(cfg, bot, message, command, stateManager, usersData)
-}
+	"tg-hotels-bot/internal/states"
+	"tg-hotels-bot/internal/unsplash"
+)
 
 // Обрабатывает кнопку "Недорогие отели"
 func ShowLowprice(cfg *config.Config, bot *tgbotapi.BotAPI, message *tgbotapi.Message, stateManager *states.StateManager, usersData map[int64]*models.UserData) {
-	command := "lowprice"
-	handleSearchCommand(cfg, bot, message, command, stateManager, usersData)
+	handleSearchCommand(cfg, bot, message, models.LowPrice, stateManager, usersData)
 }
 
 // Выполняет общие действия для поиска отелей
-func handleSearchCommand(cfg *config.Config, bot *tgbotapi.BotAPI, message *tgbotapi.Message, command string, stateManager *states.StateManager, usersData map[int64]*models.UserData) {
+func handleSearchCommand(cfg *config.Config, bot *tgbotapi.BotAPI, message *tgbotapi.Message, command models.CommandType, stateManager *states.StateManager, usersData map[int64]*models.UserData) {
 	chatID := message.Chat.ID
 
 	// Обновляем состояние пользователя
@@ -40,8 +34,8 @@ func handleSearchCommand(cfg *config.Config, bot *tgbotapi.BotAPI, message *tgbo
 }
 
 // Отправляет фото с запросом города
-func sendCityRequestWithPhoto(bot *tgbotapi.BotAPI, chatID int64, command string) {
-	photoURL := photos.GetPhotoByCommand(command)
+func sendCityRequestWithPhoto(bot *tgbotapi.BotAPI, chatID int64, command models.CommandType) {
+	photoURL := unsplash.GetPhotoByCommand(command)
 
 	msg := tgbotapi.NewPhoto(chatID, tgbotapi.FileURL(photoURL))
 	msg.Caption = "<b>Отправьте боту город для поиска</b>"
@@ -52,7 +46,7 @@ func sendCityRequestWithPhoto(bot *tgbotapi.BotAPI, chatID int64, command string
 }
 
 // Записывает команду в историю
-func registerCommandInDB(cfg *config.Config, chatID int64, command string, usersData map[int64]*models.UserData) {
+func registerCommandInDB(cfg *config.Config, chatID int64, command models.CommandType, usersData map[int64]*models.UserData) {
 	callTime := time.Now()
 
 	if _, exists := usersData[chatID]; !exists {

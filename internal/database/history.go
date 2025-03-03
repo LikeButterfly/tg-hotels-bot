@@ -10,6 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"tg-hotels-bot/internal/config"
+	"tg-hotels-bot/internal/models"
 	mongodb_models "tg-hotels-bot/internal/models/mongodb"
 	"tg-hotels-bot/internal/utils"
 	misc_utils "tg-hotels-bot/internal/utils/misc"
@@ -31,7 +32,7 @@ func GetHistoryCollection(cfg *config.Config) (*mongo.Collection, error) {
 }
 
 // Добавляет команду в историю
-func AddCommandToHistory(cfg *config.Config, command string, callTime time.Time, userID int64) error {
+func AddCommandToHistory(cfg *config.Config, command models.CommandType, callTime time.Time, userID int64) error {
 	collection, err := GetHistoryCollection(cfg)
 	if err != nil {
 		return err
@@ -50,7 +51,7 @@ func AddCommandToHistory(cfg *config.Config, command string, callTime time.Time,
 	return addNewToHistory(&userDoc, collection, command, callTime, userID)
 }
 
-func addNewToHistory(userDoc *mongodb_models.UserHistoryDoc, collection *mongo.Collection, command string, callTime time.Time, userID int64) error {
+func addNewToHistory(userDoc *mongodb_models.UserHistoryDoc, collection *mongo.Collection, command models.CommandType, callTime time.Time, userID int64) error {
 	historyEntry := createHistoryEntry(command, callTime)
 	if userDoc.History == nil {
 		userDoc.History = make(map[string]mongodb_models.HistoryEntry)
@@ -69,7 +70,7 @@ func addNewToHistory(userDoc *mongodb_models.UserHistoryDoc, collection *mongo.C
 	return err
 }
 
-func createHistory(collection *mongo.Collection, command string, callTime time.Time, userID int64) error {
+func createHistory(collection *mongo.Collection, command models.CommandType, callTime time.Time, userID int64) error {
 	historyEntry := createHistoryEntry(command, callTime)
 	history := map[string]mongodb_models.HistoryEntry{
 		callTime.Format(time.RFC3339): historyEntry,
@@ -85,7 +86,7 @@ func createHistory(collection *mongo.Collection, command string, callTime time.T
 	return err
 }
 
-func createHistoryEntry(command string, callTime time.Time) mongodb_models.HistoryEntry {
+func createHistoryEntry(command models.CommandType, callTime time.Time) mongodb_models.HistoryEntry {
 	return mongodb_models.HistoryEntry{
 		Text: fmt.Sprintf("<b>Command</b> /%s called\nв %s",
 			command, misc_utils.GetReadableDateTime(callTime.Format("2006-01-02 15:04:05"))),
