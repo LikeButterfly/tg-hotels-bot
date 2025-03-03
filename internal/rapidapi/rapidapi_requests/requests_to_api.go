@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"time"
 
@@ -62,7 +63,7 @@ func RequestToAPI(url string, queryParams map[string]string) (map[string]any, er
 }
 
 // POST-запрос к RapidAPI
-func RequestToAPIWithPayload(url string, payload map[string]any) (map[string]any, error) {
+func RequestToAPIWithPayload(url string, payload any) (map[string]any, error) {
 	client := &http.Client{Timeout: 10 * time.Second}
 
 	// Кодируем payload в JSON
@@ -70,6 +71,8 @@ func RequestToAPIWithPayload(url string, payload map[string]any) (map[string]any
 	if err != nil {
 		return nil, errors.New("ошибка сериализации payload: " + err.Error())
 	}
+
+	log.Println("Отправляемый JSON:", string(jsonData)) //
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {

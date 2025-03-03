@@ -19,10 +19,6 @@ const (
 	SelectDateIn
 	SelectDateOut
 	IsDateCorrect
-
-	// GetHotels
-	IsInfoCorrect
-	GetHotelsMenu
 )
 
 // Управляет состояниями пользователей

@@ -5,37 +5,37 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
-	"tg-hotels-bot/internal/utils"
+	"tg-hotels-bot/internal/models"
 )
 
-func CreateHotelKeyboard(info utils.HotelInfo) *tgbotapi.InlineKeyboardMarkup {
-	hotelID := info.HotelID
+func CreateHotelKeyboard(info models.HotelInfo) *tgbotapi.InlineKeyboardMarkup {
+	hotelID := info.ID
 
 	bookingButton := tgbotapi.NewInlineKeyboardButtonURL(
 		"Забронировать",
-		fmt.Sprintf("https://hotels.com/ho%d", hotelID),
+		fmt.Sprintf("https://hotels.com/ho"+hotelID),
 	)
 
 	mapsButton := tgbotapi.NewInlineKeyboardButtonData(
 		"На карте",
-		fmt.Sprintf("get_hotel_map%f/%f", info.Coordinates.Lat, info.Coordinates.Lng), // TODO check
+		fmt.Sprintf("get_hotel_map%f/%f", info.Latitude, info.Longitude), // TODO check
 	)
 
 	photosButton := tgbotapi.NewInlineKeyboardButtonData(
 		"Фото",
-		fmt.Sprintf("get_hotel_photos%d", hotelID),
+		fmt.Sprintf("get_hotel_photos"+hotelID),
 	)
 
-	favoriteButton := tgbotapi.NewInlineKeyboardButtonData(
-		"Добавить в избранное",
-		"add_to_favorites",
-	)
+	// favoriteButton := tgbotapi.NewInlineKeyboardButtonData(
+	// 	"Добавить в избранное",
+	// 	"add_to_favorites",
+	// )
 
 	markup := tgbotapi.NewInlineKeyboardMarkup(
 		[]tgbotapi.InlineKeyboardButton{bookingButton},
 		[]tgbotapi.InlineKeyboardButton{mapsButton},
 		[]tgbotapi.InlineKeyboardButton{photosButton},
-		[]tgbotapi.InlineKeyboardButton{favoriteButton},
+		// []tgbotapi.InlineKeyboardButton{favoriteButton},
 	)
 
 	return &markup

@@ -39,7 +39,7 @@ func HandleCommands(
 
 			// Подтверждение пользователем выбора города и дат
 			if strings.HasPrefix(callbackData, "city_info") {
-				hotels_handlers.ConfirmCityInfo(bot, update.CallbackQuery, stateManager, usersData)
+				hotels_handlers.ConfirmCityInfo(cfg, bot, update.CallbackQuery, stateManager, usersData)
 				continue
 			}
 		}
@@ -66,6 +66,9 @@ func HandleCommands(
 
 		case "/lowprice", "Недорогие отели":
 			action_handlers.ShowLowprice(cfg, bot, update.Message, stateManager, usersData)
+
+		case "Показать еще":
+			hotels_handlers.ShowMoreHotels(cfg, bot, usersData[chatID], chatID) // FIXME
 
 		default:
 			if strings.HasPrefix(text, "/") {

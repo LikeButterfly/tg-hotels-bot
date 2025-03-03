@@ -5,11 +5,12 @@ import (
 	"strings"
 
 	inline_keyboards "tg-hotels-bot/internal/keyboards/inline"
+	"tg-hotels-bot/internal/models"
 	"tg-hotels-bot/internal/utils"
 )
 
 // Создаёт сообщение с информацией об отеле
-func CreateHotelMessage(hotelInfo utils.HotelInfo) utils.HotelMessage {
+func CreateHotelMessage(hotelInfo models.HotelInfo) utils.HotelMessage {
 	text := fmt.Sprintf(
 		"<b>%s</b>\n%s"+
 			"\tАдрес: %s\n"+

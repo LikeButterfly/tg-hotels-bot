@@ -5,12 +5,14 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
+	"tg-hotels-bot/internal/config"
 	"tg-hotels-bot/internal/models"
 	"tg-hotels-bot/internal/states"
 )
 
 // Обрабатывает подтверждение информации о городе и датах
 func ConfirmCityInfo(
+	cfg *config.Config,
 	bot *tgbotapi.BotAPI,
 	callback *tgbotapi.CallbackQuery,
 	stateManager *states.StateManager,
@@ -22,15 +24,9 @@ func ConfirmCityInfo(
 		if usersData[chatID] == nil {
 			usersData[chatID] = &models.UserData{}
 		}
-		log.Println("Инфа корректна - переходим к поиску отелей (Не реализовано)")
-		return
-		//
-		// usersData[chatID]["hotels_page"] = "1" // начинаем с первой страницы
-		// msg := tgbotapi.NewMessage(chatID, "Заглушка: поиск отелей запущен (страница 1)")
-		// msg.ParseMode = "HTML"
-		// bot.Send(msg)
-		// // Переключаем состояние на следующий этап поиска отелей (например, state.HotelsSearch)
-		// stateManager.SetState(chatID, states.HotelsSearch)
+
+		SendFirstHotel(cfg, bot, usersData[chatID], chatID)
+
 	} else if callback.Data == "city_info_incorrect" {
 		if _, err := bot.Send(tgbotapi.NewCallback(callback.ID, "Укажите информацию заново")); err != nil {
 			log.Println("Ошибка ответа на callback: ", err)

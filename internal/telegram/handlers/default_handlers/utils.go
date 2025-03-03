@@ -29,6 +29,8 @@ func FinishWithError(bot *tgbotapi.BotAPI, chatID int64, errorText string, state
 func createErrorMessage(errorText string) string {
 	template := "⚠️ <b>%s</b>"
 
+	// TODO упростить с map
+
 	switch errorText {
 	case "cities_not_found":
 		return fmt.Sprintf(template, "Городов с таким названием не найдено")

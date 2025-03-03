@@ -11,6 +11,7 @@ import (
 
 	"tg-hotels-bot/internal/config"
 	mongodb_models "tg-hotels-bot/internal/models/mongodb"
+	"tg-hotels-bot/internal/utils"
 	misc_utils "tg-hotels-bot/internal/utils/misc"
 )
 
@@ -120,5 +121,45 @@ func AddCityToHistory(cfg *config.Config, city string, callTime time.Time, userI
 		}
 	}
 
+	return err
+}
+
+func AddHotelToHistory(cfg *config.Config, hotelMsg utils.HotelMessage, callTime time.Time, userID int64) error {
+	collection, err := GetHistoryCollection(cfg)
+	if err != nil {
+		return fmt.Errorf("получение коллекции истории: %w", err)
+	}
+
+	var userDoc mongodb_models.UserHistoryDoc
+	key := callTime.Format(time.RFC3339)
+	err = collection.FindOne(context.TODO(), bson.M{"_id": userID}).Decode(&userDoc)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			// Пользователь не найден – создаем новый документ с историей
+			history := map[string]mongodb_models.HistoryEntry{
+				key: {FoundHotels: []string{hotelMsg.Text}},
+			}
+			_, err = collection.InsertOne(context.TODO(), bson.M{"_id": userID, "history": history})
+			return err
+		}
+		return fmt.Errorf("поиск пользователя: %w", err)
+	}
+
+	// Пользователь найден – добавляем отель в найденные
+	if userDoc.History == nil {
+		userDoc.History = make(map[string]mongodb_models.HistoryEntry)
+	}
+	entry, exists := userDoc.History[key]
+	if !exists {
+		entry = mongodb_models.HistoryEntry{FoundHotels: []string{}}
+	}
+	entry.FoundHotels = append(entry.FoundHotels, hotelMsg.Text)
+	userDoc.History[key] = entry
+
+	_, err = collection.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": userID},
+		bson.M{"$set": bson.M{"history": userDoc.History}},
+	)
 	return err
 }

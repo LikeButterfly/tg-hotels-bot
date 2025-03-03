@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
 	"tg-hotels-bot/internal/states"
@@ -8,10 +10,12 @@ import (
 
 type UserData struct {
 	CityID          string
-	DateIn          string
-	DateOut         string
+	DateIn          time.Time
+	DateOut         time.Time
 	CommandType     string
 	CommandCallTime string
+	HotelsInfo      []HotelInfo
+	HotelIndex      int
 }
 
 type Bot struct {

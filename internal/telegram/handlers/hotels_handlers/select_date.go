@@ -43,7 +43,7 @@ func SelectDateIn(bot *tgbotapi.BotAPI, message *tgbotapi.Message, stateManager 
 	}
 
 	// Сохраняем дату заезда в usersData (под ключом "date_in")
-	usersData[chatID].DateIn = dateStr
+	usersData[chatID].DateIn = dateIn
 
 	// Переходим к запросу даты выезда
 	StartSelectDateOut(bot, chatID, dateIn, stateManager)
@@ -70,14 +70,7 @@ func SelectDateOut(bot *tgbotapi.BotAPI, message *tgbotapi.Message, stateManager
 		return
 	}
 
-	dateInStr := usersData[chatID].DateIn
-	dateIn, err := time.Parse("02.01.2006", dateInStr)
-	if err != nil {
-		log.Println("Ошибка парсинга date_in: ", err)
-		errMsg := tgbotapi.NewMessage(chatID, "Ошибка при чтении даты заезда. Введите заново")
-		bot.Send(errMsg)
-		return
-	}
+	dateIn := usersData[chatID].DateIn
 
 	// Проверяем, что дата выезда не раньше заезда
 	if dateOut.Before(dateIn) {
@@ -87,11 +80,10 @@ func SelectDateOut(bot *tgbotapi.BotAPI, message *tgbotapi.Message, stateManager
 	}
 
 	// Сохраняем дату выезда в usersData (под ключом "date_out")
-	usersData[chatID].DateOut = dateStr
+	usersData[chatID].DateOut = dateOut
 
 	// Спрашиваем подтверждение
-	finalMsg := fmt.Sprintf("<b>Выбрано:</b>\nЗаезд: %s\nВыезд: %s\nВсе верно?",
-		dateInStr, dateStr)
+	finalMsg := fmt.Sprintf("<b>Выбрано:</b>\nЗаезд: %s\nВыезд: %s\nВсе верно?", dateIn, dateOut)
 	msg := tgbotapi.NewMessage(chatID, finalMsg)
 	msg.ParseMode = "HTML"
 	msg.ReplyMarkup = misc_utils.IsCorrectMarkup("city_info")

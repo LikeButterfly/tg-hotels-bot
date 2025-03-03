@@ -2,42 +2,24 @@ package utils
 
 import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
-type KM float64
-type USD float64
-type Link string
-type PhotoID string
-type ID int64
-type Degrees float64
-type Latitude Degrees
-type Longitude Degrees
+// type KM float64
+// type USD float64
+// type Link string
+// type PhotoID string
+// type ID int64
+// type Degrees float64
+// type Latitude Degrees
+// type Longitude Degrees
+
+// TODO переместить в models
 
 type CitiesMessage struct {
 	Message string
 	Buttons *tgbotapi.InlineKeyboardMarkup
 }
 
-type CalendarMarkupAndStep struct {
-	Calendar *tgbotapi.InlineKeyboardMarkup
-	DateType string
-}
-
-type HotelInfo struct {
-	HotelID            ID
-	Name               string
-	Stars              int
-	Address            string
-	DistanceFromCenter KM
-	TotalCost          USD
-	CostByNight        USD
-	Photo              Link
-	Coordinates        struct {
-		Lat Latitude
-		Lng Longitude // -> Lon
-	}
-}
-
 type HotelMessage struct {
 	Text    string
-	Photo   Link
+	Photo   string
 	Buttons *tgbotapi.InlineKeyboardMarkup
 }
