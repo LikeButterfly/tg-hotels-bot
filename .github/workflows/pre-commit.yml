@@ -26,6 +26,9 @@ jobs:
       - name: Add Go bin to PATH
         run: echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
+      - name: Vendor dependencies
+        run: go mod vendor
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
