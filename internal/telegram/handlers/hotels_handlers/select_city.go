@@ -38,7 +38,10 @@ func GetCitiesByName(cfg *config.Config, bot *tgbotapi.BotAPI, message *tgbotapi
 	// Отправляем пользователю список городов с кнопками
 	msg := tgbotapi.NewMessage(message.Chat.ID, citiesMessage.Message)
 	msg.ReplyMarkup = citiesMessage.Buttons
-	bot.Send(msg)
+	if _, err := bot.Send(msg); err != nil {
+		// TODO обработать ошибку
+		return
+	}
 
 	// Переключаем состояние на выбор города
 	stateManager.SetState(message.Chat.ID, states.SelectCity)

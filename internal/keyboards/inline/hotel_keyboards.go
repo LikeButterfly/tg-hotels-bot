@@ -13,7 +13,7 @@ func CreateHotelKeyboard(info models.HotelInfo) *tgbotapi.InlineKeyboardMarkup {
 
 	bookingButton := tgbotapi.NewInlineKeyboardButtonURL(
 		"Забронировать",
-		fmt.Sprintf("https://hotels.com/ho"+hotelID),
+		fmt.Sprintf("https://hotels.com/ho%s", hotelID),
 	)
 
 	mapsButton := tgbotapi.NewInlineKeyboardButtonData(
@@ -23,7 +23,7 @@ func CreateHotelKeyboard(info models.HotelInfo) *tgbotapi.InlineKeyboardMarkup {
 
 	photosButton := tgbotapi.NewInlineKeyboardButtonData(
 		"Фото",
-		fmt.Sprintf("get_hotel_photos"+hotelID),
+		fmt.Sprintf("get_hotel_photos%s", hotelID),
 	)
 
 	// favoriteButton := tgbotapi.NewInlineKeyboardButtonData(

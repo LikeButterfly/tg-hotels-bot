@@ -35,3 +35,23 @@ make run
 ```bash
 golangci-lint run
 ```
+
+## pre-commit
+
+1. Установка pre-commit
+
+```bash
+pip install pre-commit
+```
+
+2. Установка хуков
+
+```bash
+pre-commit install
+```
+
+### Запуск
+
+```bash
+pre-commit run -a
+```

@@ -53,4 +53,3 @@ testdata/
 # Docker и контейнерные файлы
 docker-compose.override.yml
 .Dockerfile.swp
-

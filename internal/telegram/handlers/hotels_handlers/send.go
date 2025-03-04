@@ -52,7 +52,10 @@ func SendFirstHotel(
 		return
 	}
 
-	database.AddHotelToHistory(cfg, hotel_message, time.Now(), chatId)
+	if err := database.AddHotelToHistory(cfg, hotel_message, time.Now(), chatId); err != nil {
+		// TODO обработать ошибку
+		return
+	}
 
 	//
 
@@ -93,7 +96,10 @@ func ShowMoreHotels(
 		return
 	}
 
-	database.AddHotelToHistory(cfg, hotel_message, time.Now(), chatId)
+	if err := database.AddHotelToHistory(cfg, hotel_message, time.Now(), chatId); err != nil {
+		// TODO обработать ошибку
+		return
+	}
 }
 
 func TryingToSendWithPhoto(bot *tgbotapi.BotAPI, chatID int64, hotelMessage utils.HotelMessage) error {

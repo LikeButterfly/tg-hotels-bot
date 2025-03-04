@@ -14,7 +14,10 @@ func FinishWithError(bot *tgbotapi.BotAPI, chatID int64, errorText string, state
 	// Отправляем сообщение об ошибке
 	msg := tgbotapi.NewMessage(chatID, createErrorMessage(errorText))
 	msg.ParseMode = "HTML"
-	bot.Send(msg)
+	if _, err := bot.Send(msg); err != nil {
+		// TODO обработать ошибку
+		return
+	}
 
 	// Удаляем сообщения ожидания (если есть)
 	for _, msgID := range toDelete {

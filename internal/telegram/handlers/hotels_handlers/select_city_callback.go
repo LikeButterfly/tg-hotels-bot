@@ -36,7 +36,10 @@ func SetCityID(
 	// Отправляем подтверждение выбора города
 	editMsg := tgbotapi.NewEditMessageText(chatID, callback.Message.MessageID, "<b>Город выбран!</b>")
 	editMsg.ParseMode = "HTML"
-	bot.Send(editMsg)
+	if _, err := bot.Send(editMsg); err != nil {
+		// TODO обработать ошибку
+		return
+	}
 
 	// Проверяем команду пользователя
 	commandType := usersData[chatID].CommandType

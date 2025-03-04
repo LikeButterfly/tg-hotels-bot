@@ -41,8 +41,10 @@ func sendCityRequestWithPhoto(bot *tgbotapi.BotAPI, chatID int64, command models
 	msg.Caption = "<b>Отправьте боту город для поиска</b>"
 	msg.ParseMode = "HTML"
 	msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
-
-	bot.Send(msg)
+	if _, err := bot.Send(msg); err != nil {
+		// TODO обработать ошибку
+		return
+	}
 }
 
 // Записывает команду в историю

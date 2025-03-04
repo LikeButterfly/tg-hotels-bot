@@ -33,7 +33,10 @@ func ConfirmCityInfo(
 		}
 		editMsg := tgbotapi.NewEditMessageText(chatID, callback.Message.MessageID, "<b>Отправьте боту город для поиска</b>")
 		editMsg.ParseMode = "HTML"
-		bot.Send(editMsg)
+		if _, err := bot.Send(editMsg); err != nil {
+			// TODO обработать ошибку
+			return
+		}
 		stateManager.SetState(chatID, states.WaitCityName)
 	}
 }

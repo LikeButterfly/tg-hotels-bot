@@ -16,7 +16,10 @@ import (
 func StartSelectDateIn(bot *tgbotapi.BotAPI, chatID int64, stateManager *states.StateManager) {
 	msg := tgbotapi.NewMessage(chatID, "Пожалуйста, введите дату заезда в формате ДД.ММ.ГГГГ:")
 	msg.ParseMode = "HTML"
-	bot.Send(msg)
+	if _, err := bot.Send(msg); err != nil {
+		// TODO обработать ошибку
+		return
+	}
 
 	stateManager.SetState(chatID, states.SelectDateIn)
 }
@@ -30,7 +33,10 @@ func SelectDateIn(bot *tgbotapi.BotAPI, message *tgbotapi.Message, stateManager 
 	dateIn, err := time.Parse("02.01.2006", dateStr)
 	if err != nil {
 		errMsg := tgbotapi.NewMessage(chatID, "Неверный формат даты. Введите в формате ДД.ММ.ГГГГ:")
-		bot.Send(errMsg)
+		if _, err := bot.Send(errMsg); err != nil {
+			// TODO обработать ошибку
+			return
+		}
 		return
 	}
 
@@ -38,7 +44,10 @@ func SelectDateIn(bot *tgbotapi.BotAPI, message *tgbotapi.Message, stateManager 
 	today := time.Now().Truncate(24 * time.Hour)
 	if dateIn.Before(today) {
 		errMsg := tgbotapi.NewMessage(chatID, "Дата заезда не может быть в прошлом. Попробуйте снова (ДД.ММ.ГГГГ):")
-		bot.Send(errMsg)
+		if _, err := bot.Send(errMsg); err != nil {
+			// TODO обработать ошибку
+			return
+		}
 		return
 	}
 
@@ -53,8 +62,10 @@ func SelectDateIn(bot *tgbotapi.BotAPI, message *tgbotapi.Message, stateManager 
 func StartSelectDateOut(bot *tgbotapi.BotAPI, chatID int64, dateIn time.Time, stateManager *states.StateManager) {
 	msg := tgbotapi.NewMessage(chatID, "Введите дату выезда в формате ДД.ММ.ГГГГ:")
 	msg.ParseMode = "HTML"
-	bot.Send(msg)
-
+	if _, err := bot.Send(msg); err != nil {
+		// TODO обработать ошибку
+		return
+	}
 	stateManager.SetState(chatID, states.SelectDateOut)
 }
 
@@ -66,7 +77,10 @@ func SelectDateOut(bot *tgbotapi.BotAPI, message *tgbotapi.Message, stateManager
 	dateOut, err := time.Parse("02.01.2006", dateStr)
 	if err != nil {
 		errMsg := tgbotapi.NewMessage(chatID, "Неверный формат даты. Введите в формате ДД.ММ.ГГГГ:")
-		bot.Send(errMsg)
+		if _, err := bot.Send(errMsg); err != nil {
+			// TODO обработать ошибку
+			return
+		}
 		return
 	}
 
@@ -75,7 +89,10 @@ func SelectDateOut(bot *tgbotapi.BotAPI, message *tgbotapi.Message, stateManager
 	// Проверяем, что дата выезда не раньше заезда
 	if dateOut.Before(dateIn) {
 		errMsg := tgbotapi.NewMessage(chatID, "Дата выезда не может быть раньше даты заезда. Попробуйте снова (ДД.ММ.ГГГГ):")
-		bot.Send(errMsg)
+		if _, err := bot.Send(errMsg); err != nil {
+			// TODO обработать ошибку
+			return
+		}
 		return
 	}
 

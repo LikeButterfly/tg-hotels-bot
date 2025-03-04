@@ -13,8 +13,10 @@ func HandleStart(bot *tgbotapi.BotAPI, message *tgbotapi.Message, stateManager *
 	photo.Caption = "<b>Выберите действие</b>"
 	photo.ParseMode = "HTML"
 	photo.ReplyMarkup = reply_keyboards.HomeMenuKeyboard()
-	bot.Send(photo)
-
+	if _, err := bot.Send(photo); err != nil {
+		// TODO обработать ошибку
+		return
+	}
 	stateManager.ClearState(message.Chat.ID)
 }
 

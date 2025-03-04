@@ -35,8 +35,10 @@ func HandleHelp(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
 	photo.Caption = helpText
 	photo.ParseMode = "HTML"
 	photo.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
-
-	bot.Send(photo)
+	if _, err := bot.Send(photo); err != nil {
+		// TODO обработать ошибку
+		return
+	}
 }
 
 func HandleHelpText(bot *tgbotapi.BotAPI, message *tgbotapi.Message) {

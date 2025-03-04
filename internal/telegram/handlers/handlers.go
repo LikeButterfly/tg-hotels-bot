@@ -74,7 +74,10 @@ func HandleCommands(
 			if strings.HasPrefix(text, "/") {
 				log.Printf("Неизвестная команда: %s", text)
 				msg := tgbotapi.NewMessage(chatID, "Неизвестная команда. Используйте /help для списка доступных команд.")
-				bot.Send(msg)
+				if _, err := bot.Send(msg); err != nil {
+					// TODO обработать ошибку
+					return
+				}
 			} else {
 				state, exists := stateManager.GetState(chatID)
 				if exists {
